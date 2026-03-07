@@ -3,8 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <title>User Data</title>
+
+    <style>
+        #card{
+          height:40px;
+          width:20px;
+          border:1px black solid;
+          padding:20px;
+          margin:10px;
+        }
+    </style>
 </head>
 <body>
+     <h2 style="text-align:center">Welcome to user record table</h2>
+
+     <div id="userCard"></div>
+
+     <div id="paginationId">
+         <button id="prevId">prev</button>
+         <p id="numberId"></p>
+         <button id="nextId">next</button>
+     </div>
+
+
+
 
 </body>
+
+<script>
+    let currentNumber = 1;
+    const limit = 10;
+
+
+    function fetchUsers(page){
+         fetch("https://rickandmortyapi.com/api/character?page=${page}")
+         .then(res => res.json())
+         .then(data =>{
+
+            const userNumber = data.result.slice(0,10);
+            const container = document.getElementById("userCard").innerHTML = "";
+
+            userNumber.forEach(userDara => {
+               container.innerHTML +=`
+                 <div class="user-card">
+                     <p>id : ${userDara.id}</p>
+                     <p>name : ${userDara.name}</p>
+                     <p>email :${userDara.email}</p>
+                     <p>role : ${userDara.role}</p>
+                     <p>status : ${userDara.status}</p>
+                     <p>joinedAt : ${userDara.joinedAt}</p>
+                 </div>`
+            })
+
+            document.getElementById("numberId").innerTEXT = `page ${currentNumber}`
+         });
+    }
+
+    document.getElementById("prevId").addEventListener("click", () => {
+     if(currentPage > 1){
+         currentNumber--;
+         fetchUsers(currentNumber)
+     }
+
+    })
+
+
+     document.getElementById("nextId").addEventListener("click", () => {
+         currentNumber++;
+         fetchUsers(currentNumber)
+
+    })
+
+
+    fetchUsers(currentNumber);
+
+</script>
+
 </html>
