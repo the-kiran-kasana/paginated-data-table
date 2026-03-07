@@ -5,13 +5,33 @@
     <title>User Data</title>
 
     <style>
-        #card{
-          height:40px;
-          width:20px;
-          border:1px black solid;
-          padding:20px;
-          margin:10px;
+        #userCard{
+            display: grid;
+          grid-template-columns: repeat(3 , 1fr);
+          gap: 20px;
+          padding: 50px;
         }
+
+         button {
+         padding: 10px , 5px;
+         margin : 5px 10px;
+         cursor : pointer;
+        }
+
+          #paginationId{
+         text-align:center;
+         margin-bottom:20px;
+        }
+
+      .user-card{
+            text-align: center;
+            background-color: #f3f3f3;
+            padding: 10px;
+            border-radius: 8px;
+            gap :20px;
+            width:300px;
+        }
+
     </style>
 </head>
 <body>
@@ -36,12 +56,13 @@
 
 
     function fetchUsers(page){
-         fetch("https://rickandmortyapi.com/api/character?page=${page}")
+         fetch(`https://rickandmortyapi.com/api/character?page=${page}`)
          .then(res => res.json())
          .then(data =>{
 
-            const userNumber = data.result.slice(0,10);
-            const container = document.getElementById("userCard").innerHTML = "";
+            const userNumber = data.results.slice(0,10);
+            const container = document.getElementById("userCard");
+            container.innerHTML = "";
 
             userNumber.forEach(userDara => {
                container.innerHTML +=`
@@ -55,12 +76,12 @@
                  </div>`
             })
 
-            document.getElementById("numberId").innerTEXT = `page ${currentNumber}`
+            document.getElementById("numberId").innerText = `page ${currentNumber}`
          });
     }
 
     document.getElementById("prevId").addEventListener("click", () => {
-     if(currentPage > 1){
+     if(currentNumber > 1){
          currentNumber--;
          fetchUsers(currentNumber)
      }
