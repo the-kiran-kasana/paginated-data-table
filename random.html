@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Information Table</title>
+
+    <style>
+       body{
+          font-family: Arial;
+          padding:50px;
+       }
+
+       table{
+         width:100%;
+         margin-top:50px;
+       }
+
+
+
+        th,td{
+          border:2px solid gray;
+          padding:10px;
+          text-align:left;
+        }
+
+        th{
+           background:#f2f2f2;
+           cursor:pointer;
+        }
+
+
+
+        button{
+          padding:5px 10px;
+          margin:5px;
+
+        }
+
+        #pages{
+          text-align:center;
+        }
+
+</style>
+
+</head>
+
+<body>
+
+<h2>User Information Table</h2>
+
+<div class="controls">
+    <input type="text" id="search" placeholder="Search name or email">
+
+    <select id="roleFilter">
+            <option value="">Select Roles</option>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+            <option value="moderator">Moderator</option>
+    </select>
+
+    <select id="statusFilter">
+            <option value="">Select Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+    </select>
+</div>
+
+
+
+
+<table>
+    <thead> <tr>
+        <th onclick="sortTable('id')">ID</th>
+        <th onclick="sortTable('name')">Name</th>
+        <th onclick="sortTable('email')">Email</th>
+        <th onclick="sortTable('role')">Role</th>
+        <th onclick="sortTable('status')">Status</th>
+    </tr> </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+
+<!--<table>-->
+<!--    <thead> <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Name</th>-->
+<!--        <th>Email</th>-->
+<!--        <th>Role</th>-->
+<!--        <th>Status</th>-->
+<!--    </tr> </thead>-->
+<!--    <tbody id="tableBody"></tbody>-->
+<!--</table>-->
+
+
+
+
+
+
+
+
+    <div id="pages">
+        <button id="prevBtn">Prev</button>
+        <span id="pageNumber"></span>
+        <button id="nextBtn">Next</button>
+    </div>
+
+
+
+<script>
+
+
+
+let users = [];
+let filteredUsers = [];
+
+
+
+
+
+
+
+
+// fetching the data from the dummyson data api
+
+   fetch("https://dummyjson.com/users?limit=500")
+   .then(res => res.json())
+   .then(data => {
+          users = data.users.map(u => ({
+          id:u.id,
+          name:u.firstName,
+          email:u.email,
+          role: u.role,
+          status: Math.random()>0.5 ? "Active":"Inactive",
+      }));
+
+      filteredUsers = users;
+      renderTable();
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+// pagination par page has only 10 row
+
+let currentPage = 1;
+let rowsPerPage = 10;
+
+
+
+ function renderTable()
+ {
+     let start = (currentPage - 1) * 10;
+     let end = start + 10;
+     let pageData = filteredUsers.slice(start,end);
+
+    let tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
+
+        pageData.forEach(user => {
+                let row = `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td>${user.status}</td>
+                    </tr>`;
+                tableBody.innerHTML += row;
+        });
+        document.getElementById("pageNumber").innerText = "Page " + currentPage;
+ }
+
+
+
+        document.getElementById("prevBtn").onclick = function(){
+            if(currentPage > 1){
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        document.getElementById("nextBtn").onclick = function(){
+            currentPage++;
+            renderTable();
+        }
+
+
+
+
+
+
+
+
+
+//filter by the role and status
+
+
+
+           document.getElementById("roleFilter").onchange = applyFilters;
+           document.getElementById("statusFilter").onchange = applyFilters;
+
+        function applyFilters(){
+
+            let role = document.getElementById("roleFilter").value;
+            let status = document.getElementById("statusFilter").value;
+
+            filteredUsers = users.filter(function(user) {
+                let roleMatch = role==="" || user.role===role;
+                let statusMatch = status==="" || user.status===status;
+                return roleMatch && statusMatch;
+
+            });
+
+            currentPage = 1;
+            renderTable();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+// search by the name and email id of user with debouncing
+
+
+
+
+    let timer;
+
+    document.getElementById("search").oninput = function(e){
+
+       clearTimeout(timer);
+
+       timer = setTimeout(() => {
+
+        let text = e.target.value.toLowerCase();
+
+        filteredUsers = users.filter(function(user)
+        {
+             return user.name.toLowerCase().includes(text) || user.email.toLowerCase().includes(text);
+        });
+
+        currentPage = 1;
+        renderTable();
+
+    },300);
+
+    }
+
+
+
+
+
+
+//sort by the colummn
+
+
+    let ascending = true;
+
+    function sortTable(column){
+
+      filteredUsers.sort(function(a,b){
+
+       if(ascending)
+       {
+          return a[column] > b[column] ? 1 : -1;
+       }
+       else
+       {
+          return a[column] < b[column] ? 1 : -1;
+       }
+    });
+
+        ascending = !ascending;
+        renderTable();
+    }
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
