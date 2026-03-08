@@ -269,13 +269,13 @@ let rowsPerPage = 10;
 //sort by the colummn
 
 
-    let ascending = true;
+    let asc = true;
 
     function sortTable(column){
 
       filteredUsers.sort(function(a,b){
 
-       if(ascending)
+       if(asc)
        {
           return a[column] > b[column] ? 1 : -1;
        }
@@ -285,7 +285,7 @@ let rowsPerPage = 10;
        }
     });
 
-        ascending = !ascending;
+        asc = !asc;
         renderTable();
     }
 
