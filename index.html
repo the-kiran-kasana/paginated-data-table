@@ -37,6 +37,7 @@
 
         #pages{
           margin-top:20px;
+          margin-top:20px;
         }
 
 </style>
@@ -51,7 +52,7 @@
     <input type="text" id="search" placeholder="Search name or email">
 
     <select id="roleFilter">
-            <option value="">Select Roles</option>
+             <option value="">Select Roles</option>
             <option value="admin">Admin</option>
             <option value="user">User</option>
             <option value="moderator">Moderator</option>
@@ -68,6 +69,7 @@
 
 
 <table>
+
     <thead> <tr>
         <th onclick="sortTable('id')">ID</th>
         <th onclick="sortTable('name')">Name</th>
@@ -75,25 +77,9 @@
         <th onclick="sortTable('role')">Role</th>
         <th onclick="sortTable('status')">Status</th>
     </tr> </thead>
+
     <tbody id="tableBody"></tbody>
 </table>
-
-
-<!--<table>-->
-<!--    <thead> <tr>-->
-<!--        <th>ID</th>-->
-<!--        <th>Name</th>-->
-<!--        <th>Email</th>-->
-<!--        <th>Role</th>-->
-<!--        <th>Status</th>-->
-<!--    </tr> </thead>-->
-<!--    <tbody id="tableBody"></tbody>-->
-<!--</table>-->
-
-
-
-
-
 
 
 
@@ -132,9 +118,13 @@ let filteredUsers = [];
           status: Math.random()>0.5 ? "Active":"Inactive",
       }));
 
+      console.log("hello users", users);
+
       filteredUsers = users;
       renderTable();
   });
+
+
 
 
 
@@ -248,6 +238,8 @@ let rowsPerPage = 10;
 
         let text = e.target.value.toLowerCase();
 
+        console.log(text);
+
         filteredUsers = users.filter(function(user)
         {
              return user.name.toLowerCase().includes(text) || user.email.toLowerCase().includes(text);
@@ -285,6 +277,7 @@ let rowsPerPage = 10;
     });
 
         asc = !asc;
+        console.log(asc)
         renderTable();
     }
 
